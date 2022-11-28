@@ -24,3 +24,13 @@ class User(AbstractUser):
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
+
+class EmailTokenVerification(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    token = models.CharField(max_length=10)
+
+    def __str__(self) -> str:
+        return self.user.email
+
+class PasswordReset(EmailTokenVerification):
+    pass
