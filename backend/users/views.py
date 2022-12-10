@@ -8,9 +8,14 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Q
 from core.utils import send_custom_email
 from .models import PasswordReset,EmailTokenVerification
 from core.utils import generateOTP
+from users import serializers,models
+
 
 User = get_user_model()
 
@@ -140,3 +145,122 @@ class ResendUserToken(APIView):
             
         except Exception as e:
              return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class ProfileModelViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['put','get']
+    serializer_class = serializers.ProfileSerializer
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter]
+    filterset_fields = ['email','username','name']
+    search_fields = ['email','username','name']
+
+    def get_queryset(self):
+        if self.request.method == 'put':
+            return User.objects.filter(id=self.request.user.id)
+        return User.objects.all()
+        
+
+class FriendsModelViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get']
+    serializer_class = serializers.ProfileSerializer
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter]
+    filterset_fields = ['email','username','name']
+    search_fields = ['email','username','name']
+
+    def get_queryset(self):
+        return self.request.user.friends.all()
+
+class BlockedUserModelViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get']
+    serializer_class = serializers.ProfileSerializer
+    filter_backends = [DjangoFilterBackend,filters.SearchFilter]
+    filterset_fields = ['email','username','name']
+    search_fields = ['email','username','name']
+
+    def get_queryset(self):
+        return self.request.user.blocked.all()
+
+class ReportUserModelViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['post']
+    serializer_class = serializers.ReportUserSerializer
+
+    def get_queryset(self):
+        return models.ReportUser.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(reported_by=self.request.user)
+
+
+class AcceptFriendRequest(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request):
+        try:
+            friend_request = models.FriendRequests.objects.get(id=request.data['fr_id'],user=request.user)
+            friend_request.user.friends.add(friend_request.sent_by)
+            friend_request.sent_by.friends.add(friend_request.user)
+            friend_request.delete()
+            return Response({"message":"Successfully Friend Request Accepted."},status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+             return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+
+class BlockFriend(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request):
+        try:
+            user = request.user
+            block_user = User.objects.get(id=request.data['b_id'])
+            user.friends.remove(block_user)
+            user.blocked.add(block_user)
+            user.save()
+            return Response({"message":"Successfully Blocked User."},status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+             return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+
+class UnBlockFriend(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request):
+        try:
+            user = request.user
+            block_user = User.objects.get(id=request.data['b_id'])
+            user.blocked.remove(block_user)
+            return Response({"message":"Successfully UnBlocked User."},status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+             return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+
+class FriendRequestModelViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['post','get','delete']
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.FriendRequestSerializerGET
+        if self.action == 'retrieve':
+            return serializers.FriendRequestSerializerGET
+        return serializers.FriendRequestSerializerPOST
+
+    def get_queryset(self):
+        return models.FriendRequests.objects.filter(Q(user=self.request.user)
+         | Q(sent_by=self.request.user))
+
+    def perform_create(self, serializer):
+        serializer.save(sent_by=self.request.user)
+
