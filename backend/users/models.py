@@ -25,6 +25,7 @@ class User(AbstractUser):
     profile_image = models.ImageField(upload_to=get_file_path,null=True)
     friends = models.ManyToManyField('User', related_name='user_friends',blank=False)
     blocked = models.ManyToManyField('User', related_name='user_blocked',blank=False)
+    is_private = models.BooleanField(default=False)
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
