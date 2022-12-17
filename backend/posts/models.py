@@ -18,6 +18,7 @@ class Post(models.Model):
         blank=True,
         related_name="post_original",
     )
+    is_group_post = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.text + ' | ' + self.user.email

@@ -264,3 +264,35 @@ class FriendRequestModelViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(sent_by=self.request.user)
 
+class GetFollowers(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request):
+        try:
+            user_id = request.GET.get('u_id',None)
+            if user_id:
+                user = User.objects.get(id=user_id)
+            else:
+                user = request.user
+            user_serializer = serializers.ProfileSerializer(user.followers,many=True).data
+            return Response({'followers':user_serializer}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+class GetFollowing(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def get(self,request):
+        try:
+            user_id = request.GET.get('u_id',None)
+            if user_id:
+                user = User.objects.get(id=user_id)
+            else:
+                user = request.user
+            user_serializer = serializers.ProfileSerializer(user.following,many=True).data
+            return Response({'following':user_serializer}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)

@@ -13,7 +13,9 @@ from users.views import (
     BlockedUserModelViewSet,FriendRequestModelViewSet,
     AcceptFriendRequest,
     BlockFriend,
-    UnBlockFriend
+    UnBlockFriend,
+    GetFollowers,
+    GetFollowing
 )
 router = routers.DefaultRouter()
 router.register('profile', ProfileModelViewSet,basename='profile')
@@ -34,4 +36,6 @@ urlpatterns = [
     path('accept/friend-request/',AcceptFriendRequest.as_view()),
     path('block/user/',BlockFriend.as_view()),
     path('unblock/user/',UnBlockFriend.as_view()),
+    path('follow/get-followers/',GetFollowers.as_view()),
+    path('follow/get-following/',GetFollowing.as_view()),
 ]

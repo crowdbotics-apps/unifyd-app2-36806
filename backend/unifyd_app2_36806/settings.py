@@ -75,7 +75,8 @@ LOCAL_APPS = [
     'users.apps.UsersConfig',
     'chat',
     'posts',
-    'notification'
+    'notification',
+    'groups'
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
