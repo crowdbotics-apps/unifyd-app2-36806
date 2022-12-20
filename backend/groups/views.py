@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import filters
+from django.db.models import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from groups import models,serializers
 
@@ -94,3 +95,14 @@ class AllGroupPostModelViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return models.Group.objects.all()
+
+# class ChangePassword(APIView):
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [IsAuthenticated]
+
+#     def post(self,request):
+#         try:
+#             category = models.GroupCategory.objects.annotate(total = )
+#             return Response({"message":"Successfully Password changed."},status=status.HTTP_201_CREATED)
+#         except Exception as e:
+#              return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)

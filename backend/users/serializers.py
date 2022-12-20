@@ -6,7 +6,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.User
-        fields = ('id','name','email','username','profile_image')
+        fields = ('id','first_name','last_name',
+        'email','username','zip_code',
+        'location','date_of_birth',
+        'profile_image')
 
 class ReportUserSerializer(serializers.ModelSerializer):
 

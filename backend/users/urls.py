@@ -15,7 +15,8 @@ from users.views import (
     BlockFriend,
     UnBlockFriend,
     GetFollowers,
-    GetFollowing
+    GetFollowing,
+    ChangePassword
 )
 router = routers.DefaultRouter()
 router.register('profile', ProfileModelViewSet,basename='profile')
@@ -38,4 +39,5 @@ urlpatterns = [
     path('unblock/user/',UnBlockFriend.as_view()),
     path('follow/get-followers/',GetFollowers.as_view()),
     path('follow/get-following/',GetFollowing.as_view()),
+    path('password/change/',ChangePassword.as_view()),
 ]

@@ -21,13 +21,16 @@ class User(AbstractUser):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.
-    name = models.CharField(_("Name of User"), blank=True, null=True, max_length=255)
     profile_image = models.ImageField(upload_to=get_file_path,null=True)
     friends = models.ManyToManyField('User', related_name='user_friends',blank=False)
     blocked = models.ManyToManyField('User', related_name='user_blocked',blank=False)
     followers = models.ManyToManyField('User',related_name='users_followers',blank=True)
     following = models.ManyToManyField('User',related_name='users_following',blank=True)
     is_private = models.BooleanField(default=False)
+    zip_code = models.CharField(max_length=10,null=True)
+    location = models.CharField(max_length=255,null=True)
+    date_of_birth = models.DateField(null=True)
+
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})

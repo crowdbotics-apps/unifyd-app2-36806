@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import filters
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q
 from core.utils import send_custom_email
@@ -154,23 +155,45 @@ class ProfileModelViewSet(viewsets.ModelViewSet):
     http_method_names = ['put','get']
     serializer_class = serializers.ProfileSerializer
     filter_backends = [DjangoFilterBackend,filters.SearchFilter]
-    filterset_fields = ['email','username','name']
-    search_fields = ['email','username','name']
+    filterset_fields = ['email','username','first_name','last_name']
+    search_fields = ['email','username','first_name','last_name']
 
     def get_queryset(self):
         if self.request.method == 'put':
             return User.objects.filter(id=self.request.user.id)
         return User.objects.all()
-        
 
+    @action(detail=True, url_path="follow", methods=["GET"])
+    def follow(self, request, pk):
+        try:
+            user = request.user
+            follow_user = self.get_object()
+            follow_user.followers.add(user)
+            user.following.add(follow_user)
+            return Response('Successfully Followed the User.', status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+      
+    @action(detail=True, url_path="unfollow", methods=["GET"])
+    def unfollow(self, request, pk):
+        try:
+            user = request.user
+            follow_user = self.get_object()
+            follow_user.followers.remove(user)
+            return Response('Successfully Unfollowed the User.', status=status.HTTP_201_CREATED)
+        except Exception as e:
+            print(e)
+            return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+      
 class FriendsModelViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     http_method_names = ['get']
     serializer_class = serializers.ProfileSerializer
     filter_backends = [DjangoFilterBackend,filters.SearchFilter]
-    filterset_fields = ['email','username','name']
-    search_fields = ['email','username','name']
+    filterset_fields = ['email','username','first_name','last_name']
+    search_fields = ['email','username','first_name','last_name']
 
     def get_queryset(self):
         return self.request.user.friends.all()
@@ -181,8 +204,8 @@ class BlockedUserModelViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
     serializer_class = serializers.ProfileSerializer
     filter_backends = [DjangoFilterBackend,filters.SearchFilter]
-    filterset_fields = ['email','username','name']
-    search_fields = ['email','username','name']
+    filterset_fields = ['email','username','first_name','last_name']
+    search_fields = ['email','username','first_name','last_name']
 
     def get_queryset(self):
         return self.request.user.blocked.all()
@@ -296,3 +319,24 @@ class GetFollowing(APIView):
         except Exception as e:
             print(e)
             return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePassword(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request):
+        try:
+            old_password = request.data['old_password']
+            new_password1 = request.data['new_password1']
+            new_password2 = request.data['new_password2']
+            user = request.user
+            if not user.check_password(old_password):
+                return Response({"message":"Incorrect Password."},status=status.HTTP_201_CREATED)
+            if new_password1 != new_password2:
+                return Response({"message":"Please put same Password in bot fields."},status=status.HTTP_201_CREATED)
+            user.set_password(new_password1)
+            user.save()
+            return Response({"message":"Successfully Password changed."},status=status.HTTP_201_CREATED)
+        except Exception as e:
+             return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
