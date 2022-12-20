@@ -96,13 +96,15 @@ class AllGroupPostModelViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return models.Group.objects.all()
 
-# class ChangePassword(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
+class GetCategoryCount(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
-#     def post(self,request):
-#         try:
-#             category = models.GroupCategory.objects.annotate(total = )
-#             return Response({"message":"Successfully Password changed."},status=status.HTTP_201_CREATED)
-#         except Exception as e:
-#              return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+    def get(self,request):
+        try:
+            result = (models.Group.objects.values('category__name')
+                       .order_by('category')
+                       .annotate(count=Count('category')))
+            return Response(result,status=status.HTTP_201_CREATED)
+        except Exception as e:
+             return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)

@@ -12,4 +12,5 @@ router.register('all-group-post', views.AllGroupPostModelViewSet,basename='all-g
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('group-category-count/',views.GetCategoryCount.as_view())
 ]
