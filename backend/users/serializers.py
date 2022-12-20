@@ -30,3 +30,15 @@ class FriendRequestSerializerGET(serializers.ModelSerializer):
     class Meta:
         model = models.FriendRequests
         fields = '__all__'
+
+class PreferenceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.Preference
+        exclude = ('user',)
+
+class NotificationPreferenceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = models.NotificationPreference
+        exclude = ('user',)

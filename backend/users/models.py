@@ -35,6 +35,30 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 
+class Preference(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    display_name_as = models.CharField(max_length=255)
+    is_like_profile = models.BooleanField(default=True)
+    is_hide_birthday = models.BooleanField(default=False)
+    who_can_see_profile = models.CharField(max_length=255,default='Public')
+    is_online_status = models.BooleanField(default=True)
+    timezone = models.CharField(max_length=255,null=True)
+    is_enable_chat = models.BooleanField(default=True)
+    allow_new_message_friends = models.BooleanField(default=True)
+
+class NotificationPreference(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    post_comment = models.BooleanField(default=True)
+    post_reaction = models.BooleanField(default=True)
+    comment_reaction = models.BooleanField(default=True)
+    comment_reply = models.BooleanField(default=True)
+    share_post = models.BooleanField(default=True)
+    liked_my_profile = models.BooleanField(default=True)
+    mention = models.BooleanField(default=True)
+    new_message = models.BooleanField(default=True)
+    friend_request = models.BooleanField(default=True)
+
+
 class EmailTokenVerification(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     token = models.CharField(max_length=10)

@@ -16,13 +16,17 @@ from users.views import (
     UnBlockFriend,
     GetFollowers,
     GetFollowing,
-    ChangePassword
+    ChangePassword,
+    PreferenceModelViewSet,
+    NotificationPreferenceModelViewSet
 )
 router = routers.DefaultRouter()
 router.register('profile', ProfileModelViewSet,basename='profile')
 router.register('friends', FriendsModelViewSet,basename='friend')
 router.register('blocked', BlockedUserModelViewSet,basename='blocked')
 router.register('friend-request', FriendRequestModelViewSet,basename='friend-request')
+router.register('preference', PreferenceModelViewSet,basename='preference')
+router.register('notification-preference', NotificationPreferenceModelViewSet,basename='notification-preference')
 
 app_name = "users"
 urlpatterns = [

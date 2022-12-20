@@ -340,3 +340,31 @@ class ChangePassword(APIView):
             return Response({"message":"Successfully Password changed."},status=status.HTTP_201_CREATED)
         except Exception as e:
              return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class PreferenceModelViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['post','put','get']
+    serializer_class = serializers.PreferenceSerializer
+
+    def get_queryset(self):
+        return models.Preference.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class NotificationPreferenceModelViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['post','put','get']
+    serializer_class = serializers.NotificationPreferenceSerializer
+
+    def get_queryset(self):
+        return models.NotificationPreference.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    
