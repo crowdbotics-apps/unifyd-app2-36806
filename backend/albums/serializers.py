@@ -1,5 +1,3 @@
-from dataclasses import fields
-from tkinter import E
 from rest_framework import serializers
 from albums import models
 
