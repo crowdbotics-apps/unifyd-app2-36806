@@ -37,6 +37,7 @@ urlpatterns = [
     path("api/v1/", include("posts.urls")),
     path("api/v1/", include("notification.urls")),
     path("api/v1/", include("groups.urls")),
+    path("api/v1/", include("albums.urls")),
 ]
 
 admin.site.site_header = "UNIFYD App2"

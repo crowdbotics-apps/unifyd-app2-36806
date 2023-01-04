@@ -76,7 +76,8 @@ LOCAL_APPS = [
     'chat',
     'posts',
     'notification',
-    'groups'
+    'groups',
+    'albums'
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',
