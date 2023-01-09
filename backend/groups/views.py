@@ -108,3 +108,20 @@ class GetCategoryCount(APIView):
             return Response(result,status=status.HTTP_201_CREATED)
         except Exception as e:
              return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RemoveUserGroup(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request):
+        try:
+            user = request.user
+            removed_user = models.User.objects.filter(id = request.data['u_id']).first()
+            group = models.Group.objects.filter(id = request.data['group_id']).first()
+            if group.user != user:
+                return Response({'error': 'You are not the owner of this group'}, status=status.HTTP_400_BAD_REQUEST)
+            group.members.remove(removed_user)
+            return Response({'msg':"Successfully removed user"},status=status.HTTP_201_CREATED)
+        except Exception as e:
+             return Response({'error': e.args[0]}, status=status.HTTP_400_BAD_REQUEST)

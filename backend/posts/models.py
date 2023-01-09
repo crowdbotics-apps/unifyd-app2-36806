@@ -19,6 +19,8 @@ class Post(models.Model):
         related_name="post_original",
     )
     is_group_post = models.BooleanField(default=False)
+    is_poll = models.BooleanField(default=False)
+    is_multiple_poll = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.text + ' | ' + self.user.email
