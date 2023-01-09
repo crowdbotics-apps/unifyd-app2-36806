@@ -77,7 +77,7 @@ LOCAL_APPS = [
     'posts',
     'notification',
     'groups',
-    'poll'
+    'poll',
     'albums'
 ]
 THIRD_PARTY_APPS = [
