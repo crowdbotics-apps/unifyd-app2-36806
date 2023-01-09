@@ -37,11 +37,8 @@ urlpatterns = [
     path("api/v1/", include("posts.urls")),
     path("api/v1/", include("notification.urls")),
     path("api/v1/", include("groups.urls")),
-<<<<<<< HEAD
     path("api/v1/", include("poll.urls")),
-=======
     path("api/v1/", include("albums.urls")),
->>>>>>> 1e8688bc5839843e5f1871e417a102242a3acdbf
 ]
 
 admin.site.site_header = "UNIFYD App2"
