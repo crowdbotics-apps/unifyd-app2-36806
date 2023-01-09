@@ -77,7 +77,11 @@ LOCAL_APPS = [
     'posts',
     'notification',
     'groups',
+<<<<<<< HEAD
     'poll'
+=======
+    'albums'
+>>>>>>> 1e8688bc5839843e5f1871e417a102242a3acdbf
 ]
 THIRD_PARTY_APPS = [
     'rest_framework',

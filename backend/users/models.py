@@ -30,6 +30,8 @@ class User(AbstractUser):
     zip_code = models.CharField(max_length=10,null=True)
     location = models.CharField(max_length=255,null=True)
     date_of_birth = models.DateField(null=True)
+    longitude = models.FloatField(null=True,blank=True)
+    latutude = models.FloatField(null=True,blank=True)
 
 
     def get_absolute_url(self):
