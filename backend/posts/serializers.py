@@ -51,8 +51,11 @@ class PostLikeSerializerPOST(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = self.context['request'].user
-        if models.PostLike.objects.filter(post=validated_data['post'], user=user).exists():
-            raise serializers.ValidationError("Already Like by User")
+        like = models.PostLike.objects.filter(post=validated_data['post'], user=user)
+        if like.exists():
+            like = like.first()    
+            like.delete()
+            raise serializers.ValidationError('unliked')
         validated_data['user'] = user
         post_like = models.PostLike.objects.create(**validated_data)
         return post_like

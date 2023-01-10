@@ -58,6 +58,7 @@ class PostLike(models.Model):
 class FlagPost(models.Model):
     post = models.ForeignKey(Post,on_delete=models.CASCADE)
     reason = models.TextField()
+    reason_type = models.CharField(max_length=255,null=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
     def __str__(self) -> str:

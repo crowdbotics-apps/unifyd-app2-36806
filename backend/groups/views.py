@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 from rest_framework import filters
 from django.db.models import Count
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from filters.filters import RelatedOrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from groups import models,serializers
 
@@ -85,6 +88,10 @@ class AllGroupPostModelViewSet(viewsets.ModelViewSet):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     http_method_names = ['get']
+    filter_backends = [RelatedOrderingFilter,filters.SearchFilter,DjangoFilterBackend]
+    ordering_fields = '__all__'
+    filterset_fields=['id',]
+    search_fields = ['id',]
 
     def get_serializer_class(self):
         if self.action == 'list':
