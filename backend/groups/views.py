@@ -101,7 +101,7 @@ class AllGroupPostModelViewSet(viewsets.ModelViewSet):
         return serializers.GroupPostSerializerPOST
 
     def get_queryset(self):
-        return models.Group.objects.all()
+        return models.GroupPost.objects.all()
 
 class GetCategoryCount(APIView):
     authentication_classes = [TokenAuthentication]

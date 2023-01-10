@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from posts.serializers import PostLikeSerializerGET
+from posts.serializers import PostSerializer
 from groups import models
 
 
@@ -40,7 +40,7 @@ class GroupSerializerPOST(serializers.ModelSerializer):
 
 class GroupPostSerializerGET(serializers.ModelSerializer):
     group = GroupSerializerGET()
-    post = PostLikeSerializerGET()
+    post = PostSerializer()
 
     class Meta:
         model = models.GroupPost
