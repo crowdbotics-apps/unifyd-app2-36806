@@ -90,8 +90,8 @@ class AllGroupPostModelViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
     filter_backends = [RelatedOrderingFilter,filters.SearchFilter,DjangoFilterBackend]
     ordering_fields = '__all__'
-    filterset_fields=['id',]
-    search_fields = ['id',]
+    filterset_fields=['group__id',]
+    search_fields = ['group__id',]
 
     def get_serializer_class(self):
         if self.action == 'list':
