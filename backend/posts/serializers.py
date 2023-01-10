@@ -55,7 +55,7 @@ class PostLikeSerializerPOST(serializers.ModelSerializer):
         if like.exists():
             like = like.first()    
             like.delete()
-            raise serializers.ValidationError('unliked')
+            raise serializers.ValidationError('unliked',code=201)
         validated_data['user'] = user
         post_like = models.PostLike.objects.create(**validated_data)
         return post_like
